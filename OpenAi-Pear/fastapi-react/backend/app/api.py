@@ -120,8 +120,12 @@ async def random_wikipedia_article():
     else:
         return {"error": "No suitable article found."}
 
-    def get_closest_concepts(text): 
-        prompt = "Based on this text give me the 5 main concepts that readers might be confused with . Make sure to format it as 5 wikipedia page titles in json format. The page titles should be 2-3 words long and just a little ambigous"
+    def get_closest_concepts(text):
+        prompt = ("Based on this text, identify the 5 main concepts that readers might find confusing. "
+                "Format your response as a JSON object with one key named 'CONCEPTS', "
+                "and the value should be a list of the concepts. Each concept should be 2-3 words long, "
+                "slightly ambiguous, and presented in a comma-separated list inside the JSON value.")
+
         response = client.chat.completions.create(
             model="gpt-4-turbo",
             response_format = {"type": "json_object"},
