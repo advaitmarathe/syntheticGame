@@ -9,7 +9,6 @@ import RandomWikipedia from "./components/RandomWikipedia";  // new
 function App() {
   return (
     <ChakraProvider>
-      <Header />
       <RandomWikipedia />
     </ChakraProvider>
   )
