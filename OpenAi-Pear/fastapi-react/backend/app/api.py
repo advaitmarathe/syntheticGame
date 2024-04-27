@@ -151,21 +151,25 @@ async def random_wikipedia_article():
         "prop": "extracts",
         "explaintext": True
     }
-    def create_summary(text): 
-        prompt = "Summarize the piece of text for me in an informational way. Wikipedia Article Text:",
+    def create_summary(text, title):
+        # Enhance the prompt to produce a more engaging, narrative-style summary that avoids revealing the central theme or the title
+        prompt = ("Create an engaging, narrative-style summary of the following text that informs the reader without giving away the central theme or mentioning the title. "
+                "Think of this as making the summary compelling and enjoyable to read as if it's part of a discovery journey. "
+                "Original Article Title: '{}', Article Text:").format(title)
+        
         response = client.chat.completions.create(
-        model="gpt-4-turbo",
-        messages=[
-            {
-            "role": "user",
-            "content": f"{prompt} {text}"
-            },
-        ],
-        temperature=1,
-        max_tokens=256,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
+            model="gpt-4-turbo",
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"{prompt} {text}"
+                },
+            ],
+            temperature=1,  # Higher temperature for more creative responses
+            max_tokens=256,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
         )
         return response.choices[0].message.content
 
@@ -177,7 +181,7 @@ async def random_wikipedia_article():
 
     article_url = f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}"
     closest = get_closest_concepts(content)
-    summary = create_summary(content)
+    summary = create_summary(content, title)
     return {
         "title": title,
         "content": content,
