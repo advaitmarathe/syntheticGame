@@ -63,10 +63,10 @@ function RandomWikipedia() {
   };
 
   return (
-    <Container maxW="container.md" centerContent>
+    <Container maxW="container.md" centerContent background="white" padding="50px" margin="50px" borderRadius="10px">
       <VStack spacing={4} align="stretch">
         <Heading as="h1" size="xl" textAlign="center" mt={5}>Text Synthetic Game</Heading>
-        <Button colorScheme="teal" onClick={fetchRandomArticle}>Load Article</Button>
+        {(!article.content & !isLoading) && <Button colorScheme="teal" onClick={fetchRandomArticle}>Load Article</Button>}
         {isLoading ? (
           <Center w="100%" h="200px"> {/* Set the height to avoid collapse when content is loading */}
             <Spinner size="xl" />
