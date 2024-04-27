@@ -120,6 +120,25 @@ async def random_wikipedia_article():
     else:
         return {"error": "No suitable article found."}
 
+    def get_closest_concepts(text): 
+        prompt = "Based on this text give me the 5 main concepts that readers might be confused with . Make sure to format it as 5 wikipedia page titles in json format. The page titles should be 2-3 words long and just a little ambigous"
+        response = client.chat.completions.create(
+            model="gpt-4-turbo",
+            response_format = {"type": "json_object"},
+            messages=[
+            {
+                "role": "user",
+                "content": f"{prompt} {text}"
+            },
+            ],
+            temperature=1,
+            max_tokens=256,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+            )
+        return response.choices[0].message.content
+
     # Parameters to get the text of the selected page
     params_text = {
         "action": "query",
@@ -128,6 +147,23 @@ async def random_wikipedia_article():
         "prop": "extracts",
         "explaintext": True
     }
+    def create_summary(text): 
+        prompt = "Summarize the piece of text for me in an informational way. Wikipedia Article Text:",
+        response = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {
+            "role": "user",
+            "content": f"{prompt} {text}"
+            },
+        ],
+        temperature=1,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+        )
+        return response.choices[0].message.content
 
     # Request to get the page content
     response_text = requests.get(url, params=params_text)
@@ -136,9 +172,12 @@ async def random_wikipedia_article():
     content = data_text["query"]["pages"][page_id]["extract"]
 
     article_url = f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}"
-
+    closest = get_closest_concepts(content)
+    summary = create_summary(content)
     return {
         "title": title,
         "content": content,
-        "url": article_url
+        "url": article_url,
+        "closest": closest,
+        "summary": summary
     }

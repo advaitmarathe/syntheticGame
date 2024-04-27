@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 function RandomWikipedia() {
-  const [article, setArticle] = useState({ title: '', summary: '', content: '', url: "", summary: "" });
+  const [article, setArticle] = useState({ title: '', summary: '', content: '', url: "", summary: "", closest: "" });
 
   const fetchRandomArticle = async () => {
     try {
@@ -10,7 +10,8 @@ function RandomWikipedia() {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      setArticle({ title: data.title, summary: data.summary, content: data.content, url: data.url, summary: data.summary });
+      console.log(data)
+      setArticle({ title: data.title, summary: data.summary, content: data.content, url: data.url, summary: data.summary, closest: data.closest });
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
@@ -18,12 +19,13 @@ function RandomWikipedia() {
 
   return (
     <div>
-      <button onClick={fetchRandomArticle}>Load Article</button>
-      <h2>{article.title}</h2>
-      <p>{article.url}</p>
-      <p>{article.content}</p>
-      {/* <p>{article.summary}</p> */}
-    </div>
+    <button onClick={fetchRandomArticle}>Load Article</button>
+    <h2><strong>Title:</strong> {article.title}</h2>
+    <p><strong>URL:</strong> <a href={article.url} target="_blank" rel="noopener noreferrer">{article.url}</a></p>
+    <p><strong>Content:</strong> {article.content}</p>
+    <p><strong>Closest:</strong> {article.closest}</p>
+    <p><strong>Summary:</strong> {article.summary}</p>
+  </div>
   );
 }
 
