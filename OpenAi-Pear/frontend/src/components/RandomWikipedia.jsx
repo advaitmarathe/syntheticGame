@@ -11,6 +11,8 @@ import {
   Stack,
   Textarea,
   useToast,
+  Spinner,
+  Center // Import the Center component
 } from '@chakra-ui/react';
 
 function RandomWikipedia() {
@@ -18,9 +20,11 @@ function RandomWikipedia() {
   const [answer, setAnswer] = useState('');
   const [explanation, setExplanation] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
   const fetchRandomArticle = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch('http://localhost:8000/random_wikipedia');
       if (!response.ok) {
@@ -30,9 +34,11 @@ function RandomWikipedia() {
       const closestData = [...JSON.parse(data.closest).CONCEPTS, data.title];
       console.log(closestData);
       setArticle({ title: data.title, summary: data.summary, content: data.content, url: data.url, closest: closestData });
-      setCorrectAnswer(data.title);  // Store the correct answer
+      setCorrectAnswer(data.title);
+      setIsLoading(false);
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
+      setIsLoading(false);
     }
   };
 
@@ -61,7 +67,11 @@ function RandomWikipedia() {
       <VStack spacing={4} align="stretch">
         <Heading as="h1" size="xl" textAlign="center" mt={5}>Text Synthetic Game</Heading>
         <Button colorScheme="teal" onClick={fetchRandomArticle}>Load Article</Button>
-        {article.content && (
+        {isLoading ? (
+          <Center w="100%" h="200px"> {/* Set the height to avoid collapse when content is loading */}
+            <Spinner size="xl" />
+          </Center>
+        ) : article.content && (
           <>
             <Heading as="h3" size="md">Summary</Heading>
             <Text>{article.summary}</Text>
