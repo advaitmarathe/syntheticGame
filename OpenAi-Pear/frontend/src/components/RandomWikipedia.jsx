@@ -5,20 +5,19 @@ import {
   Container,
   Heading,
   Text,
-  Link,
   VStack,
   Radio,
   RadioGroup,
   Stack,
-  Input,
   Textarea,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 
 function RandomWikipedia() {
   const [article, setArticle] = useState({ title: '', summary: '', content: '', url: '', closest: [] });
   const [answer, setAnswer] = useState('');
   const [explanation, setExplanation] = useState('');
+  const [correctAnswer, setCorrectAnswer] = useState('');
   const toast = useToast();
 
   const fetchRandomArticle = async () => {
@@ -28,23 +27,33 @@ function RandomWikipedia() {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      // Randomize options
       const closestData = [...JSON.parse(data.closest).CONCEPTS, data.title];
       console.log(closestData);
       setArticle({ title: data.title, summary: data.summary, content: data.content, url: data.url, closest: closestData });
+      setCorrectAnswer(data.title);  // Store the correct answer
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
   };
 
   const handleSubmit = () => {
-    toast({
-      title: "Submission received!",
-      description: "Thanks for your response.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+    if (answer === correctAnswer) {
+      toast({
+        title: "Correct!",
+        description: "You've selected the right concept.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Incorrect!",
+        description: `The right concept was '${correctAnswer}'. Try again!`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
