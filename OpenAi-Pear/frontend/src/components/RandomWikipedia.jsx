@@ -65,6 +65,7 @@ function RandomWikipedia() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [explanation, setExplanation] = useState(false);
 
   const fetchRandomArticle = async () => {
     setIsLoading(true);
