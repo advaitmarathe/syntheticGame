@@ -42,10 +42,11 @@ function Leaderboard({ articleTitle, isCorrect }) {
   return (
     <Box p="4" borderWidth="1px" borderRadius="lg" background={bgColor} borderColor={borderColor} boxShadow="xl">
       <Heading as="h2" size="lg" textAlign="center" mb="4">
-        {articleTitle} - Leaderboard
+        Leaderboard
       </Heading>
       <Text mt="2" mb="4" fontSize="md" color={isCorrect ? 'green.500' : 'red.500'} textAlign="center">
-        {isCorrect ? 'Correct! 🎉' : 'Incorrect! 😞'}
+        {isCorrect ? 'Correct! 🎉' : 'Incorrect! Better luck next time. Correct answer is ' + articleTitle}
+
       </Text>
       <List spacing={3}>
         {sampleLeaderboardData.map((item, index) => (
