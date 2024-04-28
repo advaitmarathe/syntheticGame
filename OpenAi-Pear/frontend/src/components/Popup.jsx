@@ -4,20 +4,11 @@ import {
   Button,
   Flex,
   Text,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
+  useColorModeValue,
 } from '@chakra-ui/react';
 
 function Popup({ onStart, onReconsider, reconsiderUrl }) {
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
-
   const handleStart = () => {
-    onClose();
     onStart();
   };
 
@@ -26,29 +17,47 @@ function Popup({ onStart, onReconsider, reconsiderUrl }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={() => {}} isCentered closeOnOverlayClick={false} closeOnEsc={false} size="xl">
-      <ModalOverlay
-        style={{ 
-          background: "linear-gradient(to right, #89CFF0, #F08080)" // Gradient from light blue to light red
-        }}
-      />
-      <ModalContent
+    <Flex
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      minH="100vh"
+    >
+      <Box
         p="2rem"
+        bg="white"
+        borderRadius="md"
+        boxShadow="2xl"
+        w="full"
+        maxW="xl"
+        textAlign="center"
       >
-        <ModalHeader fontSize="2xl">Ready to learn something new?</ModalHeader>
-        <ModalBody>
-          <Text mb={6} fontSize="xl">Become the one friend who always has an interesting tidbit to say!</Text>
-        </ModalBody>
-        <ModalFooter justifyContent="space-between">
-          <Button colorScheme="green" size="lg" onClick={handleStart}>
+        <Text fontSize="3xl" mb={2} fontWeight="bold">
+          Ready to learn something new?
+        </Text>
+        <Text fontSize="xl" mb={6}>
+          Become the one friend who always has an interesting tidbit to say!
+        </Text>
+        <Flex justify="space-between" w="full" px={12}>
+          <Button
+            colorScheme="green"
+            size="lg"
+            onClick={handleStart}
+            mr={3} // Adding margin right to the first button
+          >
             Start Learning
           </Button>
-          <Button colorScheme="red" size="lg" onClick={handleReconsider}>
+          <Button
+            colorScheme="red"
+            size="lg"
+            onClick={handleReconsider}
+            ml={3} // Adding margin left to the second button
+          >
             Disappoint Justin Quan!
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </Flex>
+      </Box>
+    </Flex>
   );
 }
 

@@ -73,9 +73,9 @@ function RandomWikipedia() {
           </Center>
         ) : article.content && (
           <>
-            <Heading as="h3" size="md">Summary</Heading>
+            <Heading as="h2" size="md">Summary</Heading>
             <Text>{article.summary}</Text>
-            <Heading as="h3" size="md">Select the closest related concept:</Heading>
+            <Heading as="h2" size="md">Select the closest related concept:</Heading>
             <RadioGroup onChange={setAnswer} value={answer}>
               <Stack direction="column">
                 {article.closest.map((item, index) => (
@@ -83,7 +83,10 @@ function RandomWikipedia() {
                 ))}
               </Stack>
             </RadioGroup>
-            <Heading as="h3" size="md">Why do you think this is the correct source?</Heading>
+            <Heading as="h2" size="md">Challenge Question:</Heading>
+            <Heading as="h1" size="md">Why did you choose this?</Heading>
+            <Text as='u'>Get on our national leaderboard based on how correct your answer is!!</Text>
+
             <Textarea
               value={explanation}
               onChange={(e) => setExplanation(e.target.value)}
