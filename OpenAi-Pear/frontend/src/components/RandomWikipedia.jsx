@@ -10,18 +10,60 @@ import {
   RadioGroup,
   Stack,
   Textarea,
-  useToast,
   Spinner,
-  Center // Import the Center component
+  Center,
+  List,
+  ListItem,
+  useColorModeValue
 } from '@chakra-ui/react';
+
+
+// Arrays of sample first and last names
+const firstNames = ['Alex', 'Jordan', 'Taylor', 'Casey', 'Morgan', 'Skyler', 'Quinn', 'Peyton', 'Avery', 'Riley'];
+const lastNames = ['Smith', 'J.', 'Williams', 'B.', 'Jones', 'Garcia', 'M.', 'Davis', 'Rodriguez', 'W.'];
+
+// Function to generate a random name
+const getRandomName = () => {
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    return `${firstName} ${lastName}`;
+};
+
+// Generating dummy data with names and scores, and sorting them by score in descending order
+const sampleLeaderboardData = Array.from({ length: 10 }).map((_, index) => ({
+  name: getRandomName(),
+  score: Math.floor(Math.random() * 101)  // Random score between 0 and 100
+})).sort((a, b) => b.score - a.score);  // Sorting data in descending order of score
+
+function Leaderboard({ articleTitle, isCorrect }) {
+  const bgColor = useColorModeValue("gray.50", "gray.700");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+
+  return (
+    <Box p="4" borderWidth="1px" borderRadius="lg" background={bgColor} borderColor={borderColor} boxShadow="xl">
+      <Heading as="h2" size="lg" textAlign="center" mb="4">
+        {articleTitle} - Leaderboard
+      </Heading>
+      <Text mt="2" mb="4" fontSize="md" color={isCorrect ? 'green.500' : 'red.500'} textAlign="center">
+        {isCorrect ? 'Correct! 🎉' : 'Incorrect! 😞'}
+      </Text>
+      <List spacing={3}>
+        {sampleLeaderboardData.map((item, index) => (
+          <ListItem key={index} p="2" boxShadow="md" borderRadius="md" background="white">
+            #{index + 1} - {item.name}: {item.score} points
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+}
 
 function RandomWikipedia() {
   const [article, setArticle] = useState({ title: '', summary: '', content: '', url: '', closest: [] });
   const [answer, setAnswer] = useState('');
-  const [explanation, setExplanation] = useState('');
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const toast = useToast();
 
   const fetchRandomArticle = async () => {
     setIsLoading(true);
@@ -43,24 +85,12 @@ function RandomWikipedia() {
   };
 
   const handleSubmit = () => {
-    if (answer === correctAnswer) {
-      toast({
-        title: "Correct!",
-        description: "You've selected the right concept.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: "Incorrect!",
-        description: `The right concept was '${correctAnswer}'. Try again!`,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
+    setHasSubmitted(true);
   };
+
+  if (hasSubmitted) {
+    return <Leaderboard articleTitle={article.title} isCorrect={answer === correctAnswer} />;
+  }
 
   return (
     <Container maxW="container.md" centerContent background="white" padding="50px" margin="50px" borderRadius="10px">
@@ -68,7 +98,7 @@ function RandomWikipedia() {
         <Heading as="h1" size="xl" textAlign="center" mt={5}>Text Synthetic Game</Heading>
         {(!article.content & !isLoading) && <Button colorScheme="teal" onClick={fetchRandomArticle}>Load Article</Button>}
         {isLoading ? (
-          <Center w="100%" h="200px"> {/* Set the height to avoid collapse when content is loading */}
+          <Center w="100%" h="200px">
             <Spinner size="xl" />
           </Center>
         ) : article.content && (
@@ -83,11 +113,6 @@ function RandomWikipedia() {
                 ))}
               </Stack>
             </RadioGroup>
-            <Heading as="h3" size="md">Why do you think this is the correct source?</Heading>
-            <Textarea
-              value={explanation}
-              onChange={(e) => setExplanation(e.target.value)}
-            />
             <Button colorScheme="blue" onClick={handleSubmit}>Submit</Button>
           </>
         )}
