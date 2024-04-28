@@ -14,8 +14,90 @@ import {
   Center,
   List,
   ListItem,
-  useColorModeValue
+  useColorModeValue,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  IconButton,
+  useToast,
+  useDisclosure
 } from '@chakra-ui/react';
+import { FaTwitter, FaFacebook, FaCopy, FaAward } from 'react-icons/fa';
+
+function ShareModal({ isOpen, onClose, title }) {
+  const toast = useToast();
+
+  const handleShare = (platform) => {
+    // Example function that simulates sharing and provides feedback
+    toast({
+      title: `Shared on ${platform}!`,
+      description: "Thanks for sharing! You've earned 10 points.",
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+    onClose(); // Close the modal after sharing
+  };
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(`Check out this interesting topic: ${title}`).then(() => {
+      toast({
+        title: "Copied to clipboard!",
+        description: "Now paste it anywhere you like to share.",
+        status: 'info',
+        duration: 5000,
+        isClosable: true,
+      });
+      onClose();
+    });
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Share what you learned about "{title}" with others!</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Text mb={4} fontSize="lg" textAlign="center">
+            Sharing is caring! 
+          </Text>
+          <Center>
+            <IconButton
+              icon={<FaTwitter />}
+              aria-label="Share on Twitter"
+              colorScheme="twitter"
+              m={2}
+              onClick={() => handleShare('Twitter')}
+            />
+            <IconButton
+              icon={<FaFacebook />}
+              aria-label="Share on Facebook"
+              colorScheme="facebook"
+              m={2}
+              onClick={() => handleShare('Facebook')}
+            />
+            <IconButton
+              icon={<FaCopy />}
+              aria-label="Copy to clipboard"
+              colorScheme="teal"
+              m={2}
+              onClick={handleCopyToClipboard}
+            />
+          </Center>
+          {/* <Center mt={4}>
+            <Button leftIcon={<FaAward />} colorScheme="pink" onClick={onClose}>
+              Check awards
+            </Button>
+          </Center> */}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+}
 
 
 // Arrays of sample first and last names
@@ -38,6 +120,7 @@ const sampleLeaderboardData = Array.from({ length: 10 }).map((_, index) => ({
 function Leaderboard({ articleTitle, isCorrect }) {
   const bgColor = useColorModeValue("gray.50", "gray.700");
   const borderColor = useColorModeValue("gray.200", "gray.600");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box p="4" borderWidth="1px" borderRadius="lg" background={bgColor} borderColor={borderColor} boxShadow="xl">
@@ -55,6 +138,9 @@ function Leaderboard({ articleTitle, isCorrect }) {
           </ListItem>
         ))}
       </List>
+      <Button colorScheme="blue" onClick={onOpen}  width={"full"} marginTop={"10px"}>Share</Button>
+            <ShareModal isOpen={isOpen} onClose={onClose} title={articleTitle} />
+
     </Box>
   );
 }
